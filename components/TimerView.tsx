@@ -72,6 +72,7 @@ const TimerView: React.FC<TimerViewProps> = ({ startDuration = 300 }) => {
 
   const adjustTime = (amount: number) => {
     if (state.isActive) return;
+    
     setState((prev) => {
       const newDuration = Math.max(0, prev.duration + amount);
       return {
@@ -85,70 +86,44 @@ const TimerView: React.FC<TimerViewProps> = ({ startDuration = 300 }) => {
 
   const progress = state.duration > 0 ? state.timeLeft / state.duration : 0;
 
+  // Glassmorphism Button Base
+  const glassButton = "relative h-12 sm:h-14 w-full rounded-2xl flex items-center justify-center transition-all duration-300 ease-out backdrop-blur-md border border-white/5 overflow-hidden group";
+  
+  // Specific Styles
+  const controlBtn = `${glassButton} bg-white/5 hover:bg-white/10 active:scale-[0.98] text-white/80 hover:text-white hover:border-white/20`;
+  const playBtnIdle = `${glassButton} bg-white/10 hover:bg-white/15 border-white/10 text-green-400 hover:shadow-[0_0_20px_rgba(74,222,128,0.2)] active:scale-[0.98]`;
+  const playBtnRunning = `${glassButton} bg-red-500/10 border-red-500/20 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.1)] hover:bg-red-500/20 active:scale-[0.98]`;
+  const playBtnPaused = `${glassButton} bg-green-500/10 border-green-500/20 text-green-400 shadow-[0_0_15px_rgba(74,222,128,0.1)] hover:bg-green-500/20 active:scale-[0.98]`;
+
   return (
-    <div className="flex flex-col items-center justify-between h-full py-6 space-y-8 w-full max-w-md mx-auto">
+    <div className="flex flex-col items-center h-full w-full max-w-md mx-auto">
       
-      {/* Circle & Display */}
-      <div className="flex-1 flex flex-col justify-center items-center">
-        <CircularProgress progress={progress} color="text-orange-500">
-          <div className="text-6xl font-mono font-bold tracking-wider text-white">
+      {/* 1. Circle Timer (Flexible Space) */}
+      <div className="flex-1 min-h-0 w-full flex flex-col justify-center items-center py-2 relative">
+        {/* Glow behind timer */}
+        <div className="absolute w-[200px] h-[200px] bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <CircularProgress progress={progress} color="text-white/90">
+          <div className="text-5xl sm:text-6xl font-mono font-bold tracking-wider text-white drop-shadow-2xl">
             {formatTime(state.timeLeft)}
           </div>
-          <div className="text-gray-400 mt-2 text-sm uppercase tracking-widest">
-            {state.isActive ? (state.isPaused ? 'Paused' : 'Running') : 'Ready'}
+          <div className="text-white/40 mt-2 text-xs sm:text-sm uppercase tracking-[0.2em] font-medium">
+            {state.isActive ? (state.isPaused ? 'Paused' : 'Focus') : 'Ready'}
           </div>
         </CircularProgress>
       </div>
 
-      {/* Adjusters (Only when stopped) */}
-      {!state.isActive && (
-        <div className="flex space-x-6 items-center">
-             <button onClick={() => adjustTime(-60)} className="p-4 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 active:scale-95 transition-all">
-                <Minus size={24} />
-             </button>
-             <div className="text-sm font-medium text-gray-500">ADJUST</div>
-             <button onClick={() => adjustTime(60)} className="p-4 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 active:scale-95 transition-all">
-                <Plus size={24} />
-             </button>
-        </div>
-      )}
-
-      {/* Controls */}
-      <div className="flex items-center space-x-8">
-        <button
-          onClick={resetTimer}
-          className="w-16 h-16 flex items-center justify-center rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 transition-all active:scale-95"
-        >
-          <RotateCcw size={24} />
-        </button>
-
-        <button
-          onClick={state.isActive ? toggleTimer : startTimer}
-          className={`w-24 h-24 flex items-center justify-center rounded-full transition-all active:scale-95 shadow-lg ${
-            state.isActive && !state.isPaused
-              ? 'bg-red-500/20 text-red-500 border-2 border-red-500'
-              : 'bg-green-500 text-black shadow-green-500/50'
-          }`}
-        >
-          {state.isActive && !state.isPaused ? (
-            <Pause size={36} fill="currentColor" />
-          ) : (
-            <Play size={36} fill="currentColor" className="ml-1" />
-          )}
-        </button>
-      </div>
-
-      {/* Presets */}
-      <div className="w-full overflow-x-auto no-scrollbar pb-2">
-        <div className="flex space-x-3 px-4">
+      {/* 2. Presets - Glass Bubbles */}
+      <div className="w-full shrink-0">
+        <div className="flex justify-center space-x-3 overflow-x-auto no-scrollbar px-4 py-4">
           {PRESETS.map((preset) => (
             <button
               key={preset}
               onClick={() => setDuration(preset)}
-              className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold transition-all duration-300 backdrop-blur-sm border ${
                 state.duration === preset
-                  ? 'bg-orange-500 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  ? 'bg-orange-500/80 border-orange-400/50 text-white shadow-[0_0_20px_rgba(249,115,22,0.4)] scale-110'
+                  : 'bg-white/5 border-white/10 text-white/40 hover:bg-white/10 hover:text-white hover:border-white/20'
               }`}
             >
               {preset < 3600 ? `${preset / 60}m` : `${preset / 3600}h`}
@@ -156,6 +131,55 @@ const TimerView: React.FC<TimerViewProps> = ({ startDuration = 300 }) => {
           ))}
         </div>
       </div>
+
+      {/* 3. Glass Control Box */}
+      <div className="w-full px-4 pb-2 shrink-0">
+        <div className="bg-gray-900/40 backdrop-blur-xl border border-white/10 p-3 sm:p-4 rounded-[1.5rem] shadow-2xl shadow-black/50">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+            
+            {/* Row 1: Adjusters */}
+            <button 
+              onClick={() => adjustTime(-60)} 
+              disabled={state.isActive}
+              className={`${controlBtn} ${state.isActive ? 'opacity-30 cursor-not-allowed' : ''}`}
+            >
+               <Minus size={20} className="sm:w-6 sm:h-6" />
+            </button>
+
+            <button 
+              onClick={() => adjustTime(60)} 
+              disabled={state.isActive}
+              className={`${controlBtn} ${state.isActive ? 'opacity-30 cursor-not-allowed' : ''}`}
+            >
+               <Plus size={20} className="sm:w-6 sm:h-6" />
+            </button>
+
+            {/* Row 2: Actions */}
+            <button 
+              onClick={resetTimer}
+              className={`${controlBtn} hover:text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/20 transition-colors`}
+            >
+              <RotateCcw size={20} className="sm:w-5 sm:h-5" />
+            </button>
+
+            <button
+              onClick={state.isActive ? toggleTimer : startTimer}
+              className={state.isActive 
+                ? (state.isPaused ? playBtnPaused : playBtnRunning)
+                : playBtnIdle
+              }
+            >
+              {state.isActive && !state.isPaused ? (
+                <Pause size={24} className="sm:w-7 sm:h-7 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" fill="currentColor" />
+              ) : (
+                <Play size={24} className="sm:w-7 sm:h-7 ml-1 drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]" fill="currentColor" />
+              )}
+            </button>
+
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

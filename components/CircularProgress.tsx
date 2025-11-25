@@ -2,7 +2,7 @@ import React from 'react';
 
 interface CircularProgressProps {
   progress: number; // 0 to 1
-  size?: number;
+  size?: number; // Used for coordinate calculation only
   strokeWidth?: number;
   children?: React.ReactNode;
   color?: string;
@@ -20,11 +20,11 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   const offset = circumference - progress * circumference;
 
   return (
-    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+    // Max width restricts size on large screens, while w-full/h-full allows shrinking
+    <div className="relative flex items-center justify-center w-full h-full max-w-[280px] max-h-[280px] aspect-square mx-auto">
       <svg
-        className="transform -rotate-90 w-full h-full"
-        width={size}
-        height={size}
+        className="transform -rotate-90 w-full h-full block"
+        viewBox={`0 0 ${size} ${size}`}
       >
         <circle
           className="text-gray-800"

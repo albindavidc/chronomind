@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Tabs from './components/Tabs';
 import TimerView from './components/TimerView';
 import StopwatchView from './components/StopwatchView';
@@ -6,32 +6,6 @@ import { Tab } from './types';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('timer');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate loading time for splash screen
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
-        <div className="flex flex-col items-center animate-pulse">
-           {/* Abstract Logo for Loader */}
-           <div className="w-16 h-16 mb-6 rounded-full border-4 border-white/20 border-t-white animate-spin"></div>
-           
-           <h1 className="text-3xl font-mono font-bold tracking-[0.3em] text-white/90">
-             CHRONO<span className="text-white/40">MIND</span>
-           </h1>
-           <div className="mt-2 h-0.5 w-24 bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="h-[100dvh] bg-black text-white flex flex-col font-sans selection:bg-gray-800 overflow-hidden relative animate-in fade-in duration-700">

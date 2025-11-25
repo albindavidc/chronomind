@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Tabs from './components/Tabs';
 import TimerView from './components/TimerView';
 import StopwatchView from './components/StopwatchView';
@@ -6,6 +6,34 @@ import { Tab } from './types';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('timer');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="h-[100dvh] bg-black flex items-center justify-center relative overflow-hidden">
+         {/* Ambient Background for Splash */}
+        <div className="absolute top-[-20%] left-[-20%] w-[70%] h-[70%] bg-blue-900/10 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
+        <div className="absolute bottom-[-20%] right-[-20%] w-[70%] h-[70%] bg-purple-900/10 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
+        
+        <div className="flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-1000">
+           <div className="text-2xl font-mono font-bold tracking-[0.3em] text-white/90 animate-pulse">
+            CHRONO<span className="text-white/50">MIND</span>
+           </div>
+           {/* Simple loading bar */}
+           <div className="h-0.5 w-24 bg-gray-800 rounded-full overflow-hidden">
+             <div className="h-full bg-white/50 w-full animate-[translateX_-100%_1.5s_infinite]"></div>
+           </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-[100dvh] bg-black text-white flex flex-col font-sans selection:bg-gray-800 overflow-hidden relative animate-in fade-in duration-700">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Tabs from './components/Tabs';
 import TimerView from './components/TimerView';
 import StopwatchView from './components/StopwatchView';
@@ -6,6 +6,29 @@ import { Tab } from './types';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('timer');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
+
+  if (isLoading) {
+    return (
+      <div className="h-[100dvh] bg-black flex items-center justify-center animate-out fade-out duration-1000 cursor-default select-none">
+        {/* Minimalist, Small, Elegant Loader */}
+        <div className="flex flex-col items-center gap-4">
+            <h1 className="text-xl md:text-2xl font-light tracking-[0.5em] text-white/90 font-mono animate-pulse">
+            CHRONOMIND
+            </h1>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-[100dvh] bg-black text-white flex flex-col font-sans selection:bg-gray-800 overflow-hidden relative animate-in fade-in duration-700">

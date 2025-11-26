@@ -28,8 +28,6 @@ Designed for productivity, focus, and simplicity.
 * **React**
 * **TypeScript**
 * **Vite**
-* Tailwind / SCSS 
-
 ---
 
 ## 📦 **Installation**
@@ -84,19 +82,33 @@ ChronoMind is automatically deployed using **GitHub Pages** through GitHub Actio
 ## 📁 **Project Structure**
 
 ```
-chronomind/
-│── src/
-│   ├── components/
-│   ├── services/
-│   ├── utils/
-│   ├── App.tsx
-│   └── main.tsx
-│── public/
-│── index.html
-│── package.json
-│── vite.config.ts
-│── tsconfig.json
-└── README.md
+Directory structure:
+└── albindavidc-chronomind/
+    ├── README.md
+    ├── App.tsx
+    ├── index.html
+    ├── index.tsx
+    ├── metadata.json
+    ├── package.json
+    ├── tsconfig.json
+    ├── types.ts
+    ├── vite.config.ts
+    ├── components/
+    │   ├── CircularProgress.tsx
+    │   ├── SmartSetup.tsx
+    │   ├── StopwatchView.tsx
+    │   ├── Tabs.tsx
+    │   └── TimerView.tsx
+    ├── public/
+    │   └── manifest.json
+    ├── services/
+    │   └── geminiService.ts
+    ├── utils/
+    │   └── time.ts
+    └── .github/
+        └── workflows/
+            └── deploy.yml
+
 ```
 
 ---

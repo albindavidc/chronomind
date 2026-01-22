@@ -341,30 +341,26 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
 
   // 2. EDITOR MODE
   
-  // Logic for display items
+  // Logic for display items (Default to 2 for mobile friendliness)
+  const COLLAPSED_COUNT = 2;
   const displaySavedSequences = isSavedListExpanded 
     ? savedSequences 
-    : savedSequences.slice(0, 3);
+    : savedSequences.slice(0, COLLAPSED_COUNT);
 
   return (
     <div className="flex flex-col h-full w-full max-w-md mx-auto pt-2 animate-in slide-in-from-bottom-4 duration-500 relative">
         
-      {/* Editor Header */}
-      <div className="px-4 pb-4 flex justify-between items-end relative z-10 shrink-0">
-          <div className="flex items-center gap-3">
-             <div>
-                <h2 className="text-xl font-bold text-white tracking-wide">Sequence</h2>
-                <p className="text-xs text-white/40 uppercase tracking-wider font-medium">Design your flow</p>
-             </div>
-          </div>
+      {/* Editor Header - Simplified */}
+      <div className="px-4 pb-4 flex justify-between items-center relative z-10 shrink-0">
+          <button 
+              onClick={saveCurrentSequence}
+              className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-semibold text-white/80 transition-colors border border-white/10"
+              title="Save Flow"
+          >
+             <Save size={14} /> Save Sequence
+          </button>
+
           <div className="flex items-center gap-2">
-            <button 
-                onClick={saveCurrentSequence}
-                className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-semibold text-white/80 transition-colors border border-white/10"
-                title="Save Flow"
-            >
-               <Save size={14} /> Save
-            </button>
             <button 
                 onClick={() => setIsBulkModalOpen(true)}
                 className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-semibold text-white/80 transition-colors border border-white/10"
@@ -411,7 +407,7 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
           <div className="px-4 pb-2 z-10 shrink-0">
             <div className="flex items-center justify-between mb-2">
                 <span className="text-xs uppercase tracking-wider text-white/40 font-bold">My Flows</span>
-                {savedSequences.length > 3 && (
+                {savedSequences.length > COLLAPSED_COUNT && (
                     <button 
                         onClick={() => setIsSavedListExpanded(!isSavedListExpanded)}
                         className="text-[10px] text-white/50 hover:text-white flex items-center gap-1 uppercase tracking-wider"
@@ -429,13 +425,14 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
                         onClick={() => loadSavedSequence(seq)}
                         className="group relative flex items-center justify-between px-3 py-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all cursor-pointer active:scale-[0.98]"
                     >
-                        <div className="flex flex-col min-w-0">
-                            <span className="text-xs font-semibold text-white truncate pr-1">{seq.name}</span>
-                            <span className="text-[10px] text-white/40">{seq.steps.length} Steps</span>
+                        <div className="flex items-center gap-1 min-w-0 flex-1">
+                            <span className="text-xs font-semibold text-white truncate">
+                                {seq.name} <span className="text-white/50 font-normal">({seq.steps.length})</span>
+                            </span>
                         </div>
                         <button 
                             onClick={(e) => deleteSavedSequence(e, seq.id)}
-                            className="p-1 text-white/20 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="shrink-0 p-1 text-white/20 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity ml-1"
                         >
                             <X size={12} />
                         </button>
@@ -521,17 +518,17 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
             >
                 {/* Top Row: Index, Name, Delete */}
                 <div className="flex items-center gap-3 mb-3">
-                    <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs font-mono text-white/50">
+                    <div className="w-6 h-6 shrink-0 rounded-full bg-white/10 flex items-center justify-center text-xs font-mono text-white/50">
                         {index + 1}
                     </div>
                     <input 
                         type="text" 
                         value={step.label}
                         onChange={(e) => updateStep(step.id, { label: e.target.value })}
-                        className="bg-transparent border-none text-white font-medium focus:ring-0 p-0 text-base placeholder-white/20 flex-1"
+                        className="bg-transparent border-none text-white font-medium focus:ring-0 p-0 text-base placeholder-white/20 flex-1 min-w-0"
                         placeholder="Step Name"
                     />
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 shrink-0">
                         <button 
                             onClick={() => duplicateStep(step.id)}
                             className="text-white/20 hover:text-blue-400 transition-colors p-2 rounded-full hover:bg-white/5"

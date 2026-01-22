@@ -5,6 +5,7 @@ import CircularProgress from './CircularProgress';
 import { formatTime } from '../utils/time';
 import { playTone } from '../utils/soundEngine';
 import { TimerState, SoundId } from '../types';
+import { useWakeLock } from '../hooks/useWakeLock';
 
 const PRESETS = [60, 180, 300, 600, 1500, 3600];
 
@@ -24,14 +25,25 @@ const TimerView: React.FC<TimerViewProps> = ({ startDuration = 300, soundId }) =
 
   const intervalRef = useRef<number | null>(null);
 
+  // Keep screen on while timer is running
+  useWakeLock(state.isActive && !state.isPaused);
+
   useEffect(() => {
     if (state.isActive && !state.isPaused) {
       intervalRef.current = window.setInterval(() => {
         setState((prev) => {
-          if (prev.timeLeft <= 0) {
+          if (prev.timeLeft <= 1) {
+            // Timer Finished
             if (intervalRef.current) clearInterval(intervalRef.current);
-            playTone(soundId); // Play selected sound
-            return { ...prev, isActive: false, isPaused: false, timeLeft: 0 };
+            playTone(soundId); 
+            
+            // Auto-Reset: Set isActive to false and reset timeLeft to initialDuration
+            return { 
+              ...prev, 
+              isActive: false, 
+              isPaused: false, 
+              timeLeft: prev.initialDuration 
+            };
           }
           return { ...prev, timeLeft: prev.timeLeft - 1 };
         });

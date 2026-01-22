@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Tabs from './components/Tabs';
 import TimerView from './components/TimerView';
 import StopwatchView from './components/StopwatchView';
+import SequenceView from './components/SequenceView';
 import SettingsView from './components/SettingsView';
 import { Tab, SoundId } from './types';
 
@@ -65,6 +66,10 @@ const App: React.FC = () => {
       <main className="flex-1 w-full max-w-lg mx-auto p-4 pb-24 relative flex flex-col min-h-0 z-10">
         {activeTab === 'timer' && (
            <TimerView soundId={selectedSound} />
+        )}
+
+        {activeTab === 'sequence' && (
+           <SequenceView soundId={selectedSound} />
         )}
         
         {activeTab === 'stopwatch' && (

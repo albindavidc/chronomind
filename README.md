@@ -1,132 +1,20 @@
-# ⏱️ **ChronoMind**
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-A clean and modern time-management app featuring a **Stopwatch** and **Countdown Timer**.
-Designed for productivity, focus, and simplicity.
+# Run and deploy your AI Studio app
 
----
+This contains everything you need to run your app locally.
 
-## 🌟 **Features**
+View your app in AI Studio: https://ai.studio/apps/drive/1lHQoXsnBF9lnm0rNXGDpCPMcpkGXa9tW
 
-* **Stopwatch**
+## Run Locally
 
-  * Start / Pause / Reset
-  * Millisecond-accurate timing
-  * Smooth UI transitions
-* **Countdown Timer**
+**Prerequisites:**  Node.js
 
-  * Custom time input
-  * Start / Pause / Reset
-  * Audible or visual end alerts (optional depending on your features)
-* **Responsive UI** — Works on desktop & mobile
-* **Fast** — Built with Vite + React + TypeScript
-* **Lightweight & Minimal** design
 
----
-
-## 🚀 **Tech Stack**
-
-* **React**
-* **TypeScript**
-* **Vite**
----
-
-## 📦 **Installation**
-
-Clone the repository:
-
-```bash
-git clone https://github.com/<your-username>/chronomind.git
-cd chronomind
-```
-
----
-
-## 🧩 **Run Locally**
-
-**Prerequisite:** Node.js installed
-
-1️⃣ Install dependencies
-
-```bash
-npm install
-```
-
-2️⃣ Start the development server
-
-```bash
-npm run dev
-```
-
-3️⃣ Open the app
-
-```
-http://localhost:5173
-```
-
----
-
-## 🛠️ **Build for Production**
-
-```bash
-npm run build
-```
-
----
-
-## 🌐 **Deployment**
-
-ChronoMind is automatically deployed using **GitHub Pages** through GitHub Actions.
-
----
-
-## 📁 **Project Structure**
-
-```
-Directory structure:
-└── albindavidc-chronomind/
-    ├── README.md
-    ├── App.tsx
-    ├── index.html
-    ├── index.tsx
-    ├── metadata.json
-    ├── package.json
-    ├── tsconfig.json
-    ├── types.ts
-    ├── vite.config.ts
-    ├── components/
-    │   ├── CircularProgress.tsx
-    │   ├── SmartSetup.tsx
-    │   ├── StopwatchView.tsx
-    │   ├── Tabs.tsx
-    │   └── TimerView.tsx
-    ├── public/
-    │   └── manifest.json
-    ├── services/
-    │   └── geminiService.ts
-    ├── utils/
-    │   └── time.ts
-    └── .github/
-        └── workflows/
-            └── deploy.yml
-
-```
-
----
-
-## 🤝 **Contributing**
-
-Contributions, issues, and feature requests are welcome!
-Feel free to open a **pull request**.
-
----
-
-## 📜 **License**
-
-This project is licensed under the **MIT License**.
-
----
-
-## ✨ **Author**
-
-**ChronoMind** — Built by *Albin David C*
-For learning, productivity, and building clean interfaces.
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

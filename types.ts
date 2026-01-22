@@ -1,5 +1,5 @@
 
-export type Tab = 'timer' | 'stopwatch' | 'settings';
+export type Tab = 'timer' | 'sequence' | 'stopwatch' | 'settings';
 
 export type SoundId = 'classic' | 'ethereal' | 'cosmic' | 'zen' | 'digital';
 

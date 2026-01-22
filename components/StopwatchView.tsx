@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, Flag, RotateCcw } from 'lucide-react';
 import { formatStopwatch } from '../utils/time';
 import { StopwatchState, Lap } from '../types';
+import { useWakeLock } from '../hooks/useWakeLock';
 
 const StopwatchView: React.FC = () => {
   const [state, setState] = useState<StopwatchState>({
@@ -12,6 +14,9 @@ const StopwatchView: React.FC = () => {
   });
   
   const requestRef = useRef<number | null>(null);
+
+  // Keep screen on while stopwatch is active
+  useWakeLock(state.isActive);
 
   const animate = (time: number) => {
     setState((prev) => {

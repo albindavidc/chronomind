@@ -1,11 +1,13 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Tabs from './components/Tabs';
 import TimerView from './components/TimerView';
 import StopwatchView from './components/StopwatchView';
 import SequenceView from './components/SequenceView';
 import SettingsView from './components/SettingsView';
 import { Tab, SoundId } from './types';
+
+const TABS: Tab[] = ['timer', 'sequence', 'stopwatch', 'settings'];
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('timer');
@@ -20,6 +22,48 @@ const App: React.FC = () => {
   const handleSoundChange = (id: SoundId) => {
     setSelectedSound(id);
     localStorage.setItem('chronos_sound', id);
+  };
+
+  // --- Swipe Logic ---
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const deltaX = touchStartX.current - touchEndX;
+    const deltaY = touchStartY.current - touchEndY;
+
+    // Basic swipe thresholds
+    const minSwipeDistance = 50;
+    
+    // Ensure horizontal swipe is dominant (X > Y) to avoid switching while scrolling vertically
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+      const currentIndex = TABS.indexOf(activeTab);
+      
+      if (deltaX > 0) {
+        // Swipe Left -> Next Tab
+        if (currentIndex < TABS.length - 1) {
+             setActiveTab(TABS[currentIndex + 1]);
+        }
+      } else {
+        // Swipe Right -> Prev Tab
+        if (currentIndex > 0) {
+             setActiveTab(TABS[currentIndex - 1]);
+        }
+      }
+    }
+    
+    touchStartX.current = null;
+    touchStartY.current = null;
   };
 
   useEffect(() => {
@@ -45,7 +89,11 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="h-[100dvh] bg-black text-white flex flex-col font-sans selection:bg-gray-800 overflow-hidden relative animate-in fade-in duration-700">
+    <div 
+      className="h-[100dvh] bg-black text-white flex flex-col font-sans selection:bg-gray-800 overflow-hidden relative animate-in fade-in duration-700"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       
       {/* Ambient Background Orbs for Glass Effect */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 rounded-full blur-[100px] pointer-events-none"></div>

@@ -219,6 +219,22 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
     setSteps(newSteps);
   };
 
+  const moveStepUp = (index: number) => {
+    if (index === 0) return;
+    const newSteps = [...steps];
+    // Swap current step with previous step
+    [newSteps[index - 1], newSteps[index]] = [newSteps[index], newSteps[index - 1]];
+    setSteps(newSteps);
+  };
+
+  const moveStepDown = (index: number) => {
+    if (index === steps.length - 1) return;
+    const newSteps = [...steps];
+    // Swap current step with next step
+    [newSteps[index], newSteps[index + 1]] = [newSteps[index + 1], newSteps[index]];
+    setSteps(newSteps);
+  };
+
   const updateStep = (id: string, updates: Partial<SequenceStep>) => {
     setSteps(steps.map(s => s.id === id ? { ...s, ...updates } : s));
   };
@@ -281,9 +297,9 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
   };
 
   // --- Styles ---
-  // Shared with TimerView for consistency
-  const controlBoxClass = "bg-gray-900/40 backdrop-blur-xl border border-white/10 p-3 sm:p-4 rounded-[1.5rem] shadow-2xl shadow-black/50";
-  const glassButton = "relative h-14 w-full rounded-2xl flex items-center justify-center transition-all duration-300 ease-out backdrop-blur-md border border-white/5 overflow-hidden group";
+  // Shared with TimerView for consistency but modified for SequenceView compactness
+  const controlBoxClass = "bg-gray-900/40 backdrop-blur-xl border border-white/10 p-2 sm:p-3 rounded-[1.25rem] shadow-2xl shadow-black/50";
+  const glassButton = "relative h-12 w-full rounded-xl flex items-center justify-center transition-all duration-300 ease-out backdrop-blur-md border border-white/5 overflow-hidden group";
   const startBtn = `${glassButton} bg-white/10 hover:bg-white/15 border-white/10 text-green-400 hover:shadow-[0_0_20px_rgba(74,222,128,0.2)] active:scale-[0.98]`;
   const resetBtn = `${glassButton} bg-white/5 hover:bg-white/10 active:scale-[0.98] text-white/80 hover:text-white hover:border-white/20`;
 
@@ -328,15 +344,15 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
             )}
         </div>
 
-        {/* Controls - Matching TimerView */}
+        {/* Controls - Matching TimerView but compact */}
         <div className="w-full px-4 pb-2 shrink-0">
             <div className={controlBoxClass}>
-                <div className="flex items-center justify-center gap-4">
+                <div className="flex items-center justify-center gap-3">
                     <button 
                         onClick={resetSequence}
-                        className={`${resetBtn} w-16`} // Explicit width for uniformity
+                        className={`${resetBtn} w-14`} // Slightly smaller width
                     >
-                        <RotateCcw size={20} />
+                        <RotateCcw size={18} />
                     </button>
 
                     <button
@@ -347,7 +363,7 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
                             : 'bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]'
                         } ${glassButton}`}
                     >
-                        {isPaused ? <Play size={24} className="ml-1 fill-current" /> : <Pause size={24} className="fill-current" />}
+                        {isPaused ? <Play size={22} className="ml-1 fill-current" /> : <Pause size={22} className="fill-current" />}
                     </button>
                 </div>
             </div>
@@ -525,6 +541,17 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
         </div>
       )}
 
+      {/* Step Count Header (Fixed) */}
+      <div className="px-6 py-2 shrink-0 z-10">
+        <div className="flex items-center gap-4">
+             <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-white/10 to-white/10"></div>
+             <span className="text-[10px] font-mono font-medium text-white/40 uppercase tracking-[0.2em] px-3 py-1 rounded-full bg-white/5 border border-white/5 backdrop-blur-sm shadow-sm">
+                 {steps.length} Steps
+             </span>
+             <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-white/10 to-white/10"></div>
+        </div>
+      </div>
+
       {/* Step List */}
       <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 space-y-3 pb-4 relative z-10">
         {steps.map((step, index) => (
@@ -532,11 +559,14 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
                 key={step.id} 
                 className="group relative flex flex-col p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all duration-300"
             >
-                {/* Top Row: Index, Name, Delete */}
+                {/* Top Row: Index, Name, Arrows, Actions */}
                 <div className="flex items-center gap-3 mb-3">
+                    {/* Index Badge */}
                     <div className="w-6 h-6 shrink-0 rounded-full bg-white/10 flex items-center justify-center text-xs font-mono text-white/50">
                         {index + 1}
                     </div>
+
+                    {/* Title Input */}
                     <input 
                         type="text" 
                         value={step.label}
@@ -544,6 +574,31 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
                         className="bg-transparent border-none text-white font-medium focus:ring-0 p-0 text-base placeholder-white/20 flex-1 min-w-0"
                         placeholder="Step Name"
                     />
+
+                    {/* Reorder Buttons (Distinct) */}
+                    <div className="flex items-center gap-1 shrink-0">
+                         <button 
+                            onClick={() => moveStepUp(index)}
+                            disabled={index === 0}
+                            className={`w-7 h-7 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/15 text-white/70 disabled:opacity-20 disabled:hover:bg-white/5 transition-all ${index === 0 ? 'cursor-not-allowed' : 'active:scale-95'}`}
+                            title="Move Up"
+                        >
+                            <ChevronUp size={16} />
+                        </button>
+                        <button 
+                            onClick={() => moveStepDown(index)}
+                            disabled={index === steps.length - 1}
+                            className={`w-7 h-7 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/15 text-white/70 disabled:opacity-20 disabled:hover:bg-white/5 transition-all ${index === steps.length - 1 ? 'cursor-not-allowed' : 'active:scale-95'}`}
+                            title="Move Down"
+                        >
+                            <ChevronDown size={16} />
+                        </button>
+                    </div>
+                    
+                    {/* Divider */}
+                    <div className="w-[1px] h-4 bg-white/10 mx-1"></div>
+
+                    {/* Actions */}
                     <div className="flex items-center gap-1 shrink-0">
                         <button 
                             onClick={() => duplicateStep(step.id)}
@@ -604,23 +659,23 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
         <div className="h-4"></div>
       </div>
 
-      {/* Editor Controls - Aligned with Timer View */}
+      {/* Editor Controls - Compact */}
       <div className="w-full px-4 pb-2 shrink-0 z-20">
           <div className={controlBoxClass}>
              <div className="flex items-center gap-3">
                  <button 
                     onClick={resetEditor}
-                    className={`${resetBtn} w-16`}
+                    className={`${resetBtn} w-14`}
                     title="Reset Sequence"
                  >
-                    <RotateCcw size={20} />
+                    <RotateCcw size={18} />
                  </button>
 
                  <button
                    onClick={toggleTimer}
                    className={`${startBtn} flex-1 gap-2 font-bold tracking-wide`}
                  >
-                   <Play size={20} className="fill-current" />
+                   <Play size={22} className="fill-current" />
                    <span>START</span>
                  </button>
              </div>

@@ -41,6 +41,8 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
   // --- Saved Sequences State ---
   const [savedSequences, setSavedSequences] = useState<SavedSequence[]>([]);
   const [isSavedListExpanded, setIsSavedListExpanded] = useState(false);
+  // Responsive collapsed count: 2 for mobile, 3 for tablet/desktop
+  const [collapsedCount, setCollapsedCount] = useState(2);
 
   // --- Bulk Add State ---
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
@@ -63,6 +65,21 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
             console.error("Failed to parse saved sequences");
         }
     }
+
+    // Handle responsive resize for saved flows list
+    const handleResize = () => {
+        // Tailwind 'sm' breakpoint is 640px
+        if (window.innerWidth >= 640) {
+            setCollapsedCount(3);
+        } else {
+            setCollapsedCount(2);
+        }
+    };
+
+    handleResize(); // Initial set
+    window.addEventListener('resize', handleResize);
+    
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // --- Timer Logic ---
@@ -341,11 +358,10 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
 
   // 2. EDITOR MODE
   
-  // Logic for display items (Default to 2 for mobile friendliness)
-  const COLLAPSED_COUNT = 2;
+  // Logic for display items (Responsive)
   const displaySavedSequences = isSavedListExpanded 
     ? savedSequences 
-    : savedSequences.slice(0, COLLAPSED_COUNT);
+    : savedSequences.slice(0, collapsedCount);
 
   return (
     <div className="flex flex-col h-full w-full max-w-md mx-auto pt-2 animate-in slide-in-from-bottom-4 duration-500 relative">
@@ -407,7 +423,7 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
           <div className="px-4 pb-2 z-10 shrink-0">
             <div className="flex items-center justify-between mb-2">
                 <span className="text-xs uppercase tracking-wider text-white/40 font-bold">My Flows</span>
-                {savedSequences.length > COLLAPSED_COUNT && (
+                {savedSequences.length > collapsedCount && (
                     <button 
                         onClick={() => setIsSavedListExpanded(!isSavedListExpanded)}
                         className="text-[10px] text-white/50 hover:text-white flex items-center gap-1 uppercase tracking-wider"

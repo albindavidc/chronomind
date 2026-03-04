@@ -252,11 +252,17 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
   };
 
   // --- Template Handlers ---
-  const loadTemplate = (type: 'yoga-3' | 'yoga-5' | 'work') => {
+  const loadTemplate = (type: 'yoga-1' | 'yoga-3' | 'yoga-5' | 'work') => {
       const now = Date.now();
       let newSteps: SequenceStep[] = [];
 
-      if (type === 'yoga-3') {
+      if (type === 'yoga-1') {
+          newSteps = Array.from({length: 4}).map((_, i) => ({
+              id: `${now}-${i}`,
+              duration: 60, // 1 minute
+              label: `Flow ${i + 1}`
+          }));
+      } else if (type === 'yoga-3') {
           newSteps = Array.from({length: 4}).map((_, i) => ({
               id: `${now}-${i}`,
               duration: 180, // 3 minutes
@@ -411,6 +417,13 @@ const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {
 
       {/* Template Quick Actions */}
       <div className="px-4 pb-4 flex gap-3 overflow-x-auto no-scrollbar z-10 shrink-0">
+         <button 
+            onClick={() => loadTemplate('yoga-1')}
+            className="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 hover:bg-purple-500/20 text-purple-200 text-xs font-semibold transition-all active:scale-95"
+         >
+            <Sparkles size={14} />
+            Yoga (1m)
+         </button>
          <button 
             onClick={() => loadTemplate('yoga-3')}
             className="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 hover:bg-purple-500/20 text-purple-200 text-xs font-semibold transition-all active:scale-95"

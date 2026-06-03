@@ -23,7 +23,7 @@ interface SequenceViewProps {
   soundId: SoundId;
 }
 
-const PRESETS = [60, 180, 300, 600, 1500, 3600];
+const PRESETS = [60, 120, 180, 300, 600, 1500, 3600];
 const STORAGE_KEY = 'chronos_saved_sequences';
 
 const SequenceView: React.FC<SequenceViewProps> = ({ soundId }) => {

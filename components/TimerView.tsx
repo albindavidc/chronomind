@@ -7,7 +7,7 @@ import { playTone } from '../utils/soundEngine';
 import { TimerState, SoundId } from '../types';
 import { useWakeLock } from '../hooks/useWakeLock';
 
-const PRESETS = [60, 180, 300, 600, 1500, 3600];
+const PRESETS = [60, 120, 180, 300, 600, 1500, 3600];
 
 interface TimerViewProps {
   startDuration?: number;
